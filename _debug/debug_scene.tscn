@@ -1,0 +1,79 @@
+[gd_scene load_steps=13 format=3 uid="uid://dhbve7rbjxbdq"]
+
+[ext_resource type="Shader" uid="uid://d116mg0deovcj" path="res://shaders/fire.gdshader" id="1_8mt8v"]
+[ext_resource type="Texture2D" uid="uid://dj1efe6hkvtbm" path="res://icon.svg" id="2_02bqn"]
+[ext_resource type="Shader" uid="uid://crahdcdbe0btf" path="res://shaders/god_rays.gdshader" id="4_e8sl4"]
+[ext_resource type="PackedScene" uid="uid://cggqb75a8w8r" path="res://addons/debug_menu/debug_menu.tscn" id="4_f0sud"]
+
+[sub_resource type="Gradient" id="Gradient_02bqn"]
+offsets = PackedFloat32Array(0, 0.22222222, 0.537037, 0.7740741, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.7607843, 0.22352941, 0.22352941, 1, 0.8904413, 0.35760534, 0.38664633, 1, 0.99999994, 0.74601865, 0.30855367, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lquwl"]
+gradient = SubResource("Gradient_02bqn")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ub25x"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1bvp3"]
+noise = SubResource("FastNoiseLite_ub25x")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_f0sud"]
+seed = 345678
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7mycd"]
+noise = SubResource("FastNoiseLite_f0sud")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_e8sl4"]
+shader = ExtResource("1_8mt8v")
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_1bvp3")
+shader_parameter/noise_tex_2 = SubResource("NoiseTexture2D_7mycd")
+shader_parameter/gradient_tex = SubResource("GradientTexture1D_lquwl")
+shader_parameter/scroll_speed = Vector2(0, 0)
+shader_parameter/scroll_speed_2 = Vector2(0, 0.6)
+shader_parameter/fire_strength = 1.126000053485
+shader_parameter/distortion_strength = 0.3850000182875
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vrgrh"]
+shader = ExtResource("4_e8sl4")
+shader_parameter/angle = -0.3
+shader_parameter/position = -0.2
+shader_parameter/spread = 0.20400000969
+shader_parameter/cutoff = -0.05699995520750001
+shader_parameter/falloff = 0.430000020425
+shader_parameter/edge_fade = 0.15
+shader_parameter/speed = 5.0
+shader_parameter/ray1_density = 8.0
+shader_parameter/ray2_density = 30.0
+shader_parameter/ray2_intensity = 0.3
+shader_parameter/color = Color(1, 0.9, 0.65, 0.8)
+shader_parameter/hdr = false
+shader_parameter/seed = 5.0
+
+[node name="DebugScene" type="Node2D"]
+
+[node name="Fire" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_e8sl4")
+offset_left = 830.0
+offset_top = 361.0
+offset_right = 1600.0
+offset_bottom = 986.0
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_left = 192.0
+offset_top = 137.0
+offset_right = 1130.0
+offset_bottom = 908.0
+texture = ExtResource("2_02bqn")
+expand_mode = 3
+stretch_mode = 1
+
+[node name="CanvasLayer" parent="." instance=ExtResource("4_f0sud")]
+
+[node name="Rays" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_vrgrh")
+offset_left = 100.0
+offset_top = 198.0
+offset_right = 936.0
+offset_bottom = 733.0
