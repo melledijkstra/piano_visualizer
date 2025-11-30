@@ -69,7 +69,7 @@ func parse(midi_parser: MidiFileParser) -> Array[NoteData]:
 				}
 				
 			# Note Off (status is NOTE_OFF or velocity is 0)
-			else:
+			elif event.status == MidiFileParser.Midi.Status.NOTE_OFF or (event.status == MidiFileParser.Midi.Status.NOTE_ON and event.velocity == 0):
 				if active_notes.has(note_idx):
 					_finish_note(active_notes, note_idx, current_time_seconds, final_notes)
 					
