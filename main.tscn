@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://cnsjr0nnq4dun"]
+[gd_scene load_steps=10 format=3 uid="uid://cnsjr0nnq4dun"]
 
 [ext_resource type="Script" uid="uid://bli33xbldhf30" path="res://main.gd" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://dn0s2ityh4exj" path="res://Note.tscn" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://cggqb75a8w8r" path="res://addons/debug_menu/debug_menu.tscn" id="3_h2yge"]
 [ext_resource type="Texture2D" uid="uid://dj1efe6hkvtbm" path="res://icon.svg" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://b6x7k8l9m0n1" path="res://Keyboard.tscn" id="5_kb"]
 
 [sub_resource type="Curve" id="Curve_1bvp3"]
 _limits = [0.0, 100.0, 0.0, 1.0]
@@ -69,8 +70,4 @@ randomness = 0.36
 fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_lquwl")
 
-[node name="Line2D" type="Line2D" parent="."]
-position = Vector2(0, 850)
-points = PackedVector2Array(0, 0, 1920, 0)
-width = 3.0
-texture_mode = 2
+[node name="Keyboard" parent="." instance=ExtResource("5_kb")]
