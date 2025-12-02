@@ -1,76 +1,105 @@
-[gd_scene load_steps=9 format=3 uid="uid://cnsjr0nnq4dun"]
+[gd_scene load_steps=8 format=3 uid="uid://cnsjr0nnq4dun"]
 
 [ext_resource type="Script" uid="uid://bli33xbldhf30" path="res://main.gd" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://dn0s2ityh4exj" path="res://Note.tscn" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://cggqb75a8w8r" path="res://addons/debug_menu/debug_menu.tscn" id="3_h2yge"]
-[ext_resource type="Texture2D" uid="uid://dj1efe6hkvtbm" path="res://icon.svg" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://bwx3y0xr3lqo6" path="res://keyboard.gd" id="5_lquwl"]
 
-[sub_resource type="Curve" id="Curve_1bvp3"]
-_limits = [0.0, 100.0, 0.0, 1.0]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
+[sub_resource type="Gradient" id="Gradient_1bvp3"]
+offsets = PackedFloat32Array(0, 0.868, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.76199996, 0.76199996, 0.76199996, 1, 0, 0, 0, 1)
 
-[sub_resource type="CurveTexture" id="CurveTexture_lquwl"]
-curve = SubResource("Curve_1bvp3")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7mycd"]
-particle_flag_disable_z = true
-angle_min = -122.69999
-angle_max = 346.7
-initial_velocity_max = 192.59
-gravity = Vector3(0, 100, 0)
-damping_max = 67.037
-damping_curve = SubResource("CurveTexture_lquwl")
-turbulence_noise_strength = 7.73
-turbulence_noise_scale = 5.95
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lquwl"]
+gradient = SubResource("Gradient_1bvp3")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lquwl"]
-lifetime_randomness = 0.4
-particle_flag_disable_z = true
-emission_shape = 1
-emission_sphere_radius = 1.0
-angle_min = -170.7
-angle_max = 277.30002
+lifetime_randomness = 0.2
+emission_shape = 3
+emission_box_extents = Vector3(50, 3, 1)
 direction = Vector3(0, -90, 0)
-spread = 32.941
-initial_velocity_min = 109.479996
-initial_velocity_max = 393.08
-gravity = Vector3(0, 50, 0)
-scale_max = 15.0
-hue_variation_min = -0.39000002
-hue_variation_max = 0.38999996
+spread = 12.941
+initial_velocity_min = 50.77
+initial_velocity_max = 121.03
+gravity = Vector3(0, 0, 0)
+scale_max = 3.0
+color_ramp = SubResource("GradientTexture1D_lquwl")
+hue_variation_min = -1.0
+hue_variation_max = -1.0
 
 [node name="Main" type="Node2D"]
 script = ExtResource("2_0xm2m")
 note_scene = ExtResource("2_h2yge")
-fall_speed = 1000.0
+fall_speed = 600.0
 
 [node name="Background" type="ColorRect" parent="."]
-offset_right = 2278.0
-offset_bottom = 1251.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 color = Color(0, 0, 0, 1)
 
-[node name="CanvasLayer" parent="." instance=ExtResource("3_h2yge")]
-
-[node name="GodotParticles" type="GPUParticles2D" parent="."]
-position = Vector2(262, 170)
-texture = ExtResource("4_1bvp3")
-lifetime = 2.0
-collision_base_size = 0.0
-visibility_rect = Rect2(-100, -100, 300, 300)
-process_material = SubResource("ParticleProcessMaterial_7mycd")
+[node name="DebugMenu" parent="." instance=ExtResource("3_h2yge")]
 
 [node name="SparkleParticles" type="GPUParticles2D" parent="."]
-position = Vector2(1048, 851)
-amount = 20
-lifetime = 3.0
-explosiveness = 0.21
-randomness = 0.36
+position = Vector2(560, 640)
+amount = 100
+lifetime = 4.0
 fixed_fps = 60
+visibility_rect = Rect2(-150, -500, 300, 500)
+trail_enabled = true
+trail_lifetime = 0.05
+trail_section_subdivisions = 10
 process_material = SubResource("ParticleProcessMaterial_lquwl")
 
-[node name="Line2D" type="Line2D" parent="."]
-position = Vector2(0, 850)
-points = PackedVector2Array(0, 0, 1920, 0)
-width = 3.0
-texture_mode = 2
+[node name="ConfettiParticles" type="GPUParticles2D" parent="."]
+position = Vector2(1666, 953)
+emitting = false
+amount = 100
+lifetime = 5.0
+explosiveness = 0.5
+randomness = 0.14
+fixed_fps = 60
+visibility_rect = Rect2(-200, -600, 400, 600)
+trail_enabled = true
+trail_section_subdivisions = 10
+process_material = SubResource("ParticleProcessMaterial_lquwl")
+
+[node name="VisualKeyboard" type="Control" parent="."]
+top_level = true
+custom_minimum_size = Vector2(1920, 150)
+layout_mode = 3
+anchors_preset = 0
+offset_top = 928.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("5_lquwl")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+offset_left = 64.0
+offset_top = 34.0
+offset_right = 248.0
+offset_bottom = 88.0
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" groups=["render_controls"]]
+layout_mode = 2
+text = "Speed"
+
+[node name="SpeedSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer" groups=["render_controls"]]
+layout_mode = 2
+tooltip_text = "Speed of the simulation"
+min_value = 50.0
+max_value = 1000.0
+value = 300.0
+
+[connection signal="value_changed" from="PanelContainer/MarginContainer/VBoxContainer/SpeedSlider" to="." method="_on_speed_slider_value_changed"]

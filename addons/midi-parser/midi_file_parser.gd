@@ -8,7 +8,7 @@ class_name MidiFileParser
 
 # set to "1" to print parsing debug output
 # set to a string file path where to store debug output instead of printing
-static var debug_output : String = "midi_debug.log"
+static var debug_output : String = "0"
 
 # order of key names for a midi note
 static var key_order = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
