@@ -19,23 +19,6 @@ func setup(note_data: NoteData, lane_width: float, fall_speed: float):
 	
 	self.size = Vector2(w, h)
 	self.speed = fall_speed
-	
-	# # 2. visual flair (optional: color based on velocity)
-	# # Brightness based on how hard the key was hit (velocity 0-1)
-	# var brightness = note_data.velocity
-	# var opacity = note_data.velocity
-
-	# # Color based on pitch (MIDI note number)
-	# # Map MIDI pitch (0-127) to a hue value (0-1)
-	# var hue = float(note_data.pitch % 12) / 12.0 # Cycle through 12 colors for octaves
-	# var saturation = 0.8
-	# var value = 0.9
-	# var pitch_color: Color = Color.from_hsv(hue, saturation, value)
-	# pitch_color.a = opacity
-	
-	# # Combine with velocity-based brightness
-	# self.color = pitch_color.darkened(1.0 - brightness)
-	# print(self.color)
 
 func _process(delta):
 	# Move downwards

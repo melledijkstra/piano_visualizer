@@ -1,8 +1,12 @@
-extends Node2D
+@tool
 
-@export var height: float = 150.0:
+class_name Keyboard
+
+extends Control
+
+@export var keyboard_height: float = 150.0:
 	set(val):
-		height = val
+		keyboard_height = val
 		if is_node_ready():
 			_update_keys()
 
@@ -17,7 +21,8 @@ const WHITE_KEY_COUNT = 52 # Number of white keys in 88-key range
 
 func _ready():
 	# Initial setup with current viewport width
-	var width = get_viewport_rect().size.x
+	var vp_size = get_viewport().size
+	var width = vp_size.x
 	setup(width)
 
 func setup(screen_width: float):
@@ -28,7 +33,7 @@ func setup(screen_width: float):
 
 	var white_key_width = screen_width / float(WHITE_KEY_COUNT)
 	var black_key_width = white_key_width * 0.6
-	var black_key_height = height * 0.65
+	var black_key_height = keyboard_height * 0.65
 
 	var white_key_index = 0
 
@@ -42,7 +47,6 @@ func setup(screen_width: float):
 		var is_black = _is_black(pitch)
 		var key = ColorRect.new()
 		key_dict[pitch] = key
-		add_child(key)
 
 		if is_black:
 			key.color = black_key_color
@@ -56,10 +60,13 @@ func setup(screen_width: float):
 		else:
 			key.color = white_key_color
 			# Use a slightly smaller width for visual separation (1px gap)
-			key.size = Vector2(white_key_width - 1, height)
+			key.size = Vector2(white_key_width - 1, keyboard_height)
 			key.position = Vector2(white_key_index * white_key_width, 0)
 			key.z_index = 0
 			white_key_index += 1
+
+		print('added key', pitch, key.position)
+		add_child(key)
 
 func _is_black(pitch: int) -> bool:
 	var p = pitch % 12
@@ -78,12 +85,13 @@ func get_key_width(pitch: int) -> float:
 	return 0.0
 
 func _update_keys():
-	# If height changes, update heights.
-	# If width changes, we should recall setup(), but here we handle height.
-	var black_key_height = height * 0.65
+	print('_update_keys')
+	# If keyboard_height changes, update heights.
+	# If width changes, we should recall setup(), but here we handle keyboard_height.
+	var black_key_height = self.keyboard_height * 0.65
 	for pitch in key_dict:
 		var key = key_dict[pitch]
 		if _is_black(pitch):
 			key.size.y = black_key_height
 		else:
-			key.size.y = height
+			key.size.y = keyboard_height
