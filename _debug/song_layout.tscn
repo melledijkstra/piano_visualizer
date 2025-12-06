@@ -1,0 +1,63 @@
+[gd_scene load_steps=3 format=3 uid="uid://dnm5is1s312b8"]
+
+[ext_resource type="Script" uid="uid://b5qnffvxfe883" path="res://_debug/song_layout.gd" id="1_4o18i"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4o18i"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="SongLayout" type="Node2D" node_paths=PackedStringArray("timeline")]
+script = ExtResource("1_4o18i")
+midi_file_path = "res://input/cider_house_rules.mid"
+timeline = NodePath("HScrollBar/Timeline")
+
+[node name="HScrollBar" type="ScrollContainer" parent="."]
+clip_contents = false
+custom_minimum_size = Vector2(1920, 1080)
+offset_right = 1920.0
+offset_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_4o18i")
+
+[node name="Timeline" type="Control" parent="HScrollBar"]
+layout_mode = 2
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ZoomSlider" type="HSlider" parent="UI"]
+custom_minimum_size = Vector2(200, 30)
+layout_mode = 0
+offset_left = 31.0
+offset_top = 45.0
+offset_right = 231.0
+offset_bottom = 75.0
+min_value = 1.0
+max_value = 1000.0
+value = 100.0
+
+[node name="ZoomLabel" type="Label" parent="UI"]
+layout_mode = 0
+offset_left = 31.0
+offset_top = 25.0
+offset_right = 172.0
+offset_bottom = 48.0
+text = "Zoom (Time Scale)"
+
+[node name="SongInfo" type="RichTextLabel" parent="UI"]
+layout_mode = 0
+offset_left = 31.0
+offset_top = 75.0
+offset_right = 251.0
+offset_bottom = 125.0
+text = "Notes: XXXX
+Total song time: M:SS"
+
+[connection signal="value_changed" from="UI/ZoomSlider" to="." method="_on_zoom_changed"]

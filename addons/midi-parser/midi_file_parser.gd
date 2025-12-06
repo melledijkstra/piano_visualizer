@@ -2,13 +2,18 @@
 Midi File Parser
 @author BrainFooLong
 @url https://github.com/brainfoolong/gdscript-midi-parser
-""" 
+"""
 
 class_name MidiFileParser
 
+const DEBUG = false
+
+func _debug(...args):
+	if (DEBUG): print(args)
+
 # set to "1" to print parsing debug output
 # set to a string file path where to store debug output instead of printing
-static var debug_output : String = "0"
+static var debug_output : String = "midi_debug.log"
 
 # order of key names for a midi note
 static var key_order = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
@@ -56,7 +61,7 @@ static func load_packed_byte_array(arr: PackedByteArray) -> MidiFileParser:
 				var midi = instance.current_midi
 				debug += "track-midi (event "+str(track.events.size() - 1)+")\n"
 				debug += "    time: "+str(track.delta_ticks)+"\n"
-				debug += "    status: "+str(midi.status)+"\n"
+				debug += "    status: "+status_name(midi.status)+"\n"
 				debug += "    channel: "+str(midi.channel)+"\n"
 				debug += "    param1: "+str(midi.param1)+"\n"
 				debug += "    param2: "+str(midi.param2)+"\n"
@@ -88,6 +93,23 @@ static func load_packed_byte_array(arr: PackedByteArray) -> MidiFileParser:
 			if status == MIDI_PARSER_EOB || status == MIDI_PARSER_ERROR:
 				break
 	return instance
+
+static func status_name(status: Midi.Status) -> String:
+	if status == Midi.Status.NOTE_OFF:
+		return "NOTE_OFF"
+	elif status == Midi.Status.NOTE_ON:
+		return "NOTE_ON"
+	elif status == Midi.Status.NOTE_AT:
+		return "NOTE_AT"
+	elif status == Midi.Status.CC:
+		return "CC"
+	elif status == Midi.Status.PGM_CHANGE:
+		return "PGM_CHANGE"
+	elif status == Midi.Status.CHANNEL_AT:
+		return "CHANNEL_AT"
+	elif status == Midi.Status.PITCH_BEND:
+		return "PITCH_BEND"
+	return "UNKNOWN"
 
 const MIDI_PARSER_EOB         = -2
 const MIDI_PARSER_ERROR       = -1
@@ -147,11 +169,11 @@ class Midi extends Event:
 	var channel: int = 0
 	var param1: int = 0
 	var param2: int = 0
-	var octave : int = -1 # note octave, example 5
-	var key : String = '' # note key, example E
-	var note_name  : String = '' # note name, example E5
-	var frequency : float = 0.0 # note frequency in hz
-	var	velocity : float = 0.0 # note velocity between 0 and 1
+	var octave: int = -1 # note octave, example 5
+	var key: String = '' # note key, example E
+	var note_name: String = '' # note name, example E5
+	var frequency: float = 0.0 # note frequency in hz
+	var	velocity: float = 0.0 # note velocity between 0 and 1
 	
 class Meta extends Event:
 	enum Type {
@@ -205,7 +227,7 @@ var current_sysex : Sysex
 var current_midi : Midi
 
 # internal helper vars
-var prev_midi_status = 0
+var prev_midi_status : Midi.Status = 0
 var prev_midi_channel = 0
 
 """
@@ -220,8 +242,8 @@ func parse() -> int:
 	if state == MIDI_PARSER_HEADER:
 		return parse_track()
 	if state == MIDI_PARSER_TRACK:
-		# we reached the end of the track
 		if current_track.end_byte_index <= byte_index:
+			# we reached the end of the track
 			state = MIDI_PARSER_HEADER
 			return parse()
 		return parse_event()
@@ -251,7 +273,7 @@ Parse a new track
 func parse_track() -> int:
 	if get_bytes_rest() < 8:
 		return MIDI_PARSER_EOB
-	byte_index += 4
+	byte_index += 4 # skip "MTrk" track label
 	current_track = Track.new()
 	current_track.size = int_from_buffer(4)
 	current_track.end_byte_index = byte_index + current_track.size
@@ -266,9 +288,9 @@ Returns success boolean flag
 """
 func parse_track_time() -> bool:
 	var nbytes = 0
-	var cont = 1
+	var continuation_flag = 1
 	current_track.delta_ticks = 0
-	while (cont):
+	while (continuation_flag):
 		++nbytes
 		if (get_bytes_rest() < nbytes || current_track.end_byte_index <= byte_index):
 			return false
@@ -279,7 +301,7 @@ func parse_track_time() -> bool:
 		if (current_track.delta_ticks > 0x0fffffff || nbytes > 5):
 			return false
 
-		cont = b & 0x80;
+		continuation_flag = b & 0x80;
 	current_track.absolute_ticks += current_track.delta_ticks
 	return true
 
@@ -298,7 +320,7 @@ func parse_event() -> int:
 		
 	var channel_type = bytes[byte_index]
 	if channel_type < 0xf0:
-		# Regular channel events	
+		# Regular channel events
 		return parse_channel_event()
 	else:
 		#  Special event types
@@ -319,7 +341,7 @@ func parse_channel_event() -> int:
 	current_midi = Midi.new()
 	current_midi.delta_ticks = current_track.delta_ticks
 	current_midi.absolute_ticks = current_track.absolute_ticks
-	current_midi.event_type = current_meta.EventType.MIDI
+	current_midi.event_type = Event.EventType.MIDI
 	current_track.midi.append(current_midi)
 	current_track.events.append(current_midi)
 	
@@ -329,7 +351,7 @@ func parse_channel_event() -> int:
 		if (prev_midi_status == 0):
 			return MIDI_PARSER_EOB
 			
-		current_midi.status = prev_midi_status as Midi.Status
+		current_midi.status = prev_midi_status
 		var datalen = get_event_datalen(current_midi.status)
 		if get_bytes_rest() < datalen:
 			return MIDI_PARSER_EOB
@@ -343,7 +365,7 @@ func parse_channel_event() -> int:
 		byte_index = byte_index_start + datalen
 	else:
 		#  Full event with its own status.
-		current_midi.status = (channel_type >> 4) & 0xf as Midi.Status
+		current_midi.status = (channel_type >> 4) & 0xf
 		var datalen = get_event_datalen(current_midi.status)
 		if get_bytes_rest() < 1 + datalen:
 			return MIDI_PARSER_EOB
@@ -356,13 +378,21 @@ func parse_channel_event() -> int:
 		prev_midi_status = current_midi.status
 		prev_midi_channel = current_midi.channel
 		byte_index = byte_index_start + datalen + 1
-	if current_midi.status == current_midi.Status.NOTE_ON || current_midi.status == current_midi.Status.NOTE_OFF || current_midi.status == current_midi.Status.NOTE_AT:
-		var midiKey = current_midi.param1 - 21
-		current_midi.octave = floor((current_midi.param1 - 12) / 12)
-		current_midi.key = key_order[midiKey - (current_midi.octave * 12)]
+	if current_midi.status == Midi.Status.NOTE_ON \
+	or current_midi.status == Midi.Status.NOTE_OFF \
+	or current_midi.status == Midi.Status.NOTE_AT:
+		# For note-related events, we can calculate musical properties.
+		var note_number = current_midi.param1 # not the byte, but the integer note number
+		var velocity = current_midi.param2 # not the byte, but the integer velocity
+		_debug('DEBUG - status: ', status_name(current_midi.status), ' note_number:', note_number)
+		var midiKey = note_number - 21
+		current_midi.octave = floor((note_number - 12) / 12)
+		if (midiKey % 12) < 0:
+			_debug('OH NO - midiKey: ', midiKey, ' octave: ', current_midi.octave, ' key_order: ', midiKey - (current_midi.octave * 12))
+		current_midi.key = key_order[midiKey % 12]
 		current_midi.note_name = current_midi.key + str(current_midi.octave)
-		current_midi.velocity = 1.0 / 127.0 * current_midi.param2
-		current_midi.frequency = 440.0 * (2 ** ((current_midi.param1 - 69) / 12.0))
+		current_midi.velocity = 1.0 / 127.0 * velocity
+		current_midi.frequency = 440.0 * (2 ** ((note_number - 69) / 12.0))
 	return MIDI_PARSER_TRACK_MIDI
 	
 """
@@ -380,7 +410,7 @@ func parse_sysex_event() -> int:
 	current_track.events.append(current_sysex)
 	current_sysex.delta_ticks = current_track.delta_ticks
 	current_sysex.absolute_ticks = current_track.absolute_ticks
-	current_sysex.event_type = current_meta.EventType.SYSEX
+	current_sysex.event_type = Meta.EventType.SYSEX
 	current_sysex.length = int_variable_from_buffer()
 	
 	# Length should never be negative or more than the remaining size
@@ -405,31 +435,30 @@ func parse_meta_event() -> int:
 	if !(get_bytes_rest() == 0 || channel_type == 0xff) || get_bytes_rest() < 2:
 		return MIDI_PARSER_ERROR
 	
-	# var byte_index_meta_start = byte_index
+	var byte_index_meta_start = byte_index
 	byte_index += 1
-	var meta_type = int_from_buffer(1)
+	var meta_type: Meta.Type = int_from_buffer(1)
 	current_meta = Meta.new()
 	current_track.meta.append(current_meta)
 	current_track.events.append(current_meta) 
 	current_meta.delta_ticks = current_track.delta_ticks
 	current_meta.absolute_ticks = current_track.absolute_ticks
-	current_meta.event_type = current_meta.EventType.META
-	current_meta.type = meta_type as Meta.Type
+	current_meta.event_type = Meta.EventType.META
+	current_meta.type = meta_type
 	current_meta.length = int_variable_from_buffer()
 	# Length should never be negative or more than the remaining size
 	if current_meta.length < 0 || current_meta.length > get_bytes_rest():
 		return MIDI_PARSER_ERROR
-		
+
 	current_meta.bytes = bytes.slice(byte_index, byte_index + current_meta.length)
 	current_meta.value = buffer_to_int(current_meta.bytes)
-	if current_meta.type == current_meta.Type.SET_TEMPO:
+	if current_meta.type == Meta.Type.SET_TEMPO:
 		current_meta.bpm = 60000000.0 / current_meta.value
-		current_meta.ms_per_tick = int(60000.0 / (current_meta.bpm * header.time_division))
+		current_meta.ms_per_tick = 60000.0 / (current_meta.bpm * header.time_division)
+		_debug('DEBUG META EVENT: bpm=', current_meta.bpm, ' ms_per_tick=', current_meta.ms_per_tick)
 	byte_index += current_meta.length
 	
 	return MIDI_PARSER_TRACK_META
-
-
 
 """
 Get data length for given midi status
@@ -474,7 +503,6 @@ func int_from_buffer(readBytes) -> int:
 	var i = byte_index
 	byte_index += readBytes
 	return buffer_to_int(bytes.slice(i, byte_index))
-	
 
 """
 Return an integer from a byte array

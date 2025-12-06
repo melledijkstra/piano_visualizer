@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://qycy01rpo787"]
+
+[ext_resource type="Script" uid="uid://c45rd82eed237" path="res://_debug/label.gd" id="1_sua4v"]
+[ext_resource type="Texture2D" uid="uid://br3pcbkhoscq3" path="res://assets/icons/pause.svg" id="2_dx4yw"]
+[ext_resource type="Texture2D" uid="uid://bf77k045g8jxk" path="res://assets/icons/play.svg" id="3_54crs"]
+
+[node name="WindowViewport" type="Node2D"]
+
+[node name="Label" type="Label" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+theme_override_font_sizes/font_size = 60
+text = "WINDOW: XXXXxXXXX
+VIEWPORT: 1920x1080"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("1_sua4v")
+
+[node name="Pause" type="Sprite2D" parent="."]
+position = Vector2(273, 232)
+scale = Vector2(0.365, 0.365)
+texture = ExtResource("2_dx4yw")
+
+[node name="Play" type="Sprite2D" parent="."]
+position = Vector2(1920, 528)
+scale = Vector2(1.0131251, 1.0131251)
+texture = ExtResource("3_54crs")

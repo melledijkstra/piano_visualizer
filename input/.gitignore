@@ -1,0 +1,9 @@
+# ignore everything
+*
+# except this file
+!.gitignore
+
+# keep these sample/test files
+!chromatic_scales_test.mid
+!MIDI_sample.mid
+!cider_house_rules.mid

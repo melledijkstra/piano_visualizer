@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dn0s2ityh4exj"]
 
-[ext_resource type="Script" uid="uid://dp6quc1vfueug" path="res://note.gd" id="1_m01oh"]
+[ext_resource type="Script" uid="uid://dp6quc1vfueug" path="res://components/note.gd" id="1_m01oh"]
 
 [node name="Note" type="ColorRect"]
 offset_right = 42.0

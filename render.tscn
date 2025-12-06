@@ -1,0 +1,165 @@
+[gd_scene load_steps=11 format=3 uid="uid://cnsjr0nnq4dun"]
+
+[ext_resource type="Script" uid="uid://bli33xbldhf30" path="res://render.gd" id="1_sfvfi"]
+[ext_resource type="PackedScene" uid="uid://cggqb75a8w8r" path="res://addons/debug_menu/debug_menu.tscn" id="2_yyo7u"]
+[ext_resource type="Script" uid="uid://bwx3y0xr3lqo6" path="res://components/keyboard.gd" id="3_rfujs"]
+[ext_resource type="Texture2D" uid="uid://bf77k045g8jxk" path="res://assets/icons/play.svg" id="4_gl1o6"]
+[ext_resource type="Script" uid="uid://c8sadfd68uy2k" path="res://play_pause_btn.gd" id="5_phk72"]
+
+[sub_resource type="Sky" id="Sky_sfvfi"]
+
+[sub_resource type="Environment" id="Environment_sfvfi"]
+background_mode = 3
+sky = SubResource("Sky_sfvfi")
+sky_custom_fov = 25.5
+glow_normalized = true
+glow_bloom = 0.2
+glow_blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_1bvp3"]
+offsets = PackedFloat32Array(0, 0.868, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.76199996, 0.76199996, 0.76199996, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_1bvp3"]
+gradient = SubResource("Gradient_1bvp3")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lquwl"]
+lifetime_randomness = 0.2
+emission_shape = 3
+emission_box_extents = Vector3(50, 3, 1)
+direction = Vector3(0, -90, 0)
+spread = 12.941
+initial_velocity_min = 50.77
+initial_velocity_max = 121.03
+gravity = Vector3(0, 0, 0)
+scale_max = 3.0
+color_ramp = SubResource("GradientTexture1D_1bvp3")
+hue_variation_min = -1.0
+hue_variation_max = -1.0
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_sfvfi")
+midi_file_path = "res://input/cider_house_rules.mid"
+fall_speed = 300.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_sfvfi")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0, 0, 0, 1)
+
+[node name="DebugMenu" parent="." instance=ExtResource("2_yyo7u")]
+
+[node name="SparkleParticles" type="GPUParticles2D" parent="."]
+position = Vector2(247, 821)
+amount = 100
+lifetime = 4.0
+fixed_fps = 60
+visibility_rect = Rect2(-150, -500, 300, 500)
+trail_enabled = true
+trail_lifetime = 0.05
+trail_section_subdivisions = 10
+process_material = SubResource("ParticleProcessMaterial_lquwl")
+
+[node name="ConfettiParticles" type="GPUParticles2D" parent="."]
+position = Vector2(764, 751)
+amount = 100
+lifetime = 5.0
+explosiveness = 0.5
+randomness = 0.14
+fixed_fps = 60
+visibility_rect = Rect2(-200, -600, 400, 600)
+trail_enabled = true
+trail_section_subdivisions = 10
+process_material = SubResource("ParticleProcessMaterial_lquwl")
+
+[node name="VisualKeyboard" type="Control" parent="."]
+unique_name_in_owner = true
+top_level = true
+custom_minimum_size = Vector2(1920, 150)
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -152.0
+offset_right = 1920.0
+grow_vertical = 0
+script = ExtResource("3_rfujs")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="SimulationControls" type="PanelContainer" parent="CanvasLayer"]
+offset_left = 40.0
+offset_top = 35.0
+offset_right = 417.0
+offset_bottom = 291.0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/SimulationControls"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/SimulationControls/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="SpeedLabel" type="Label" parent="CanvasLayer/SimulationControls/MarginContainer/VBoxContainer" groups=["render_controls"]]
+layout_mode = 2
+text = "Speed"
+
+[node name="SpeedSlider" type="HSlider" parent="CanvasLayer/SimulationControls/MarginContainer/VBoxContainer" groups=["render_controls"]]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Speed of the simulation"
+min_value = 50.0
+max_value = 1000.0
+value = 300.0
+editable = false
+
+[node name="TimelineLabel" type="Label" parent="CanvasLayer/SimulationControls/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Timeline"
+
+[node name="TimelineSlider" type="HSlider" parent="CanvasLayer/SimulationControls/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 5000.0
+step = 5.0
+
+[node name="SimulationInfo" type="Label" parent="CanvasLayer/SimulationControls/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Speed: -
+Time: -:--"
+
+[node name="SongInfo" type="Label" parent="CanvasLayer/SimulationControls/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Notes: ---
+Song Duration: -:--s"
+
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/SimulationControls/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PlayPauseBtn" type="Button" parent="CanvasLayer/SimulationControls/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+text = "
+"
+icon = ExtResource("4_gl1o6")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("5_phk72")
+
+[connection signal="value_changed" from="CanvasLayer/SimulationControls/MarginContainer/VBoxContainer/SpeedSlider" to="." method="_on_speed_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/SimulationControls/MarginContainer/VBoxContainer/TimelineSlider" to="." method="_on_timeline_slider_value_changed"]
+[connection signal="toggled" from="CanvasLayer/SimulationControls/MarginContainer/VBoxContainer/PlayPauseBtn" to="." method="_on_play_pause_btn_toggled"]
+[connection signal="toggled" from="CanvasLayer/SimulationControls/MarginContainer/VBoxContainer/PlayPauseBtn" to="CanvasLayer/SimulationControls/MarginContainer/VBoxContainer/PlayPauseBtn" method="_on_toggled"]

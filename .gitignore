@@ -6,6 +6,9 @@
 
 export_presets.cfg
 
+# Distribution
+.dist/
+
 # MacOS specific
 .DS_Store
 
@@ -14,7 +17,6 @@ midi_debug.log
 
 # input files (e.g. MIDI files) which can generate the output files
 input/*
-!input/MIDI_sample.mid
 # except for the gdignore, we want the godot editor to ignore the folder
 !input/.gdignore
 
