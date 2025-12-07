@@ -45,11 +45,11 @@ func _on_time_updated(_current_time: float) -> void:
   move_notes()
 
 func spawn_check():
-  var look_ahead_time = current_time + fall_duration
-  
+  var look_ahead_time = current_time + fall_duration + note_spawn_offset_time
+
   while spawn_index < song.notes.size():
     var note = song.notes[spawn_index]
-    
+
     if note.start_time <= look_ahead_time:
       spawn_note(note)
       spawn_index += 1
@@ -60,23 +60,26 @@ func move_notes():
   # Loop backwards so we can remove items safely while iterating
   for i in range(active_notes.size() - 1, -1, -1):
     var note_node = active_notes[i]
-    
+
     # Safety check if node was deleted externally
     if not is_instance_valid(note_node):
         active_notes.remove_at(i)
         continue
-    
+
     var new_y = calculate_note_position(note_node.data)
     note_node.position.y = new_y
-    
+
     # Cleanup: If note is below the screen
     if new_y > screen_h + 50:
         note_node.queue_free()
         active_notes.remove_at(i)
 
 func calculate_note_position(note_data: NoteData) -> float:
-  var new_y = target_y - fall_speed * (note_data.start_time - current_time)
-  return new_y
+  var time_remaining = note_data.start_time - current_time
+  var distance_to_target = fall_speed * time_remaining
+  var bottom_y = target_y - distance_to_target
+  var height = note_data.duration * fall_speed
+  return bottom_y - height
 
 func spawn_note(note_data: NoteData):
   if note_scene == null: return
@@ -90,11 +93,11 @@ func spawn_note(note_data: NoteData):
     label.add_theme_font_size_override("font_size", 15)
     instance.add_child(label)
   add_child(instance)
-  
+
   # Get layout from keyboard, this makes sure notes match up with the keyboard
   var key_center_x = keyboard.get_key_x(note_data.pitch)
   var key_width = keyboard.get_key_width(note_data.pitch)
-  
+
   # Setup note
   instance.setup(note_data, key_width, fall_speed)
 

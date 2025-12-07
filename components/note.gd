@@ -20,4 +20,5 @@ func setup(note_data: NoteData, lane_width: float, fall_speed: float):
 	self.size = Vector2(w, h)
 
 func calculate_height() -> float:
-	return max(data.duration * speed, 2.0)
+	self.size.y = max(data.duration * speed, 2.0)
+	return self.size.y
