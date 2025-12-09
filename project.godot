@@ -24,7 +24,8 @@ Globals="*res://globals/constants.gd"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/stretch/mode="canvas_items"
+window/stretch/mode="viewport"
+window/canvas_textures/default_texture_filter=1
 
 [editor]
 
@@ -36,12 +37,11 @@ version_control/autoload_on_startup=true
 
 [global_group]
 
-render_controls="Controls that are visible on the render screen"
+hidden_from_movie="Controls that should be hidden during movie render"
 
 [rendering]
 
 textures/vram_compression/import_etc2_astc=true
 environment/ssao/quality=3
-anti_aliasing/quality/msaa_2d=3
 anti_aliasing/quality/smaa_edge_detection_threshold=0.1
 anti_aliasing/quality/screen_space_aa=1

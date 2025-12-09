@@ -19,6 +19,7 @@ var target_debug_node: Line2D = null
 
 # -- Signals --
 signal finished()
+signal note_hit_target(note_data: NoteData)
 
 # Calculated property: How many seconds it takes to fall from top to target
 var fall_duration: float:
@@ -68,6 +69,11 @@ func move_notes():
 
     var new_y = calculate_note_position(note_node.data)
     note_node.position.y = new_y
+
+    # Trigger signal when note hits target_y
+    if not note_node.has_hit_target and note_node.bottom_y() >= target_y - 5: # -5 for a small tolerance
+        note_node.has_hit_target = true
+        emit_signal("note_hit_target", note_node.data)
 
     # Cleanup: If note is below the screen
     if new_y > screen_h + 50:

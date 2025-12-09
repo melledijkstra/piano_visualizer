@@ -2,6 +2,7 @@ class_name NoteNode extends ColorRect
 
 var speed: float = 0.0
 var data: NoteData
+var has_hit_target: bool = false
 
 func setup(note_data: NoteData, lane_width: float, fall_speed: float):
 	self.data = note_data
@@ -22,3 +23,8 @@ func setup(note_data: NoteData, lane_width: float, fall_speed: float):
 func calculate_height() -> float:
 	self.size.y = max(data.duration * speed, 2.0)
 	return self.size.y
+
+func bottom_y() -> float:
+	# anchor is at the top left of the note rectangle (position.y)
+	# so bottom y is position.y + height of the note
+	return self.position.y + self.size.y

@@ -25,6 +25,9 @@ func _ready() -> void:
 	# if no file was selected then we use the default midi file
 	midi_file_path = SceneSwitcher.get_param("selected_file", midi_file_path)
 	self.song = parse(midi_file_path)
+	# self.song = Song.new([
+	# 	NoteData.new().setup(60, 1.0, 2.0, 0.8)
+	# ])
 	_is_parsed = true
 	print("Loaded %d notes. (duration: %s seconds)" % [song.notes.size(), song.duration_formatted()])
 	emit_signal("song_loaded", song)

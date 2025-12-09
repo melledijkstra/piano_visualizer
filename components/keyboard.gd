@@ -8,8 +8,8 @@ const MAX_PITCH = 108
 const WHITE_KEY_COUNT = 52 # Number of white keys in 88-key range
 
 # -- Configuration --
-@export_color_no_alpha var white_key_color = Color.WHITE
-@export_color_no_alpha var black_key_color = Color.BLACK
+@export var white_key_color: Color = Color.WHITE
+@export var black_key_color: Color = Color.BLACK
 @export var show_labels: bool = true
 
 # -- State --

@@ -18,10 +18,11 @@ func update_ui() -> void:
     var win = get_window().size
     var vp = get_viewport().size
     var vp_rect = get_viewport().get_visible_rect().size
-    self.text = "{0}\n{1}\n{2}".format([
+    self.text = "{0}\n{1}\n{2}\nScale: {3}".format([
         window_template % win,
         viewport_template % vp,
-        viewport_rect_template % vp_rect
+        viewport_rect_template % vp_rect,
+        DisplayServer.screen_get_scale()
     ])
 
 func _on_vp_size_change():

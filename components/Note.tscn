@@ -1,9 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://dn0s2ityh4exj"]
+[gd_scene load_steps=4 format=3 uid="uid://dn0s2ityh4exj"]
 
+[ext_resource type="Shader" uid="uid://dg2gxb02iyumt" path="res://shaders/Note.gdshader" id="1_7lty8"]
 [ext_resource type="Script" uid="uid://dp6quc1vfueug" path="res://components/note.gd" id="1_m01oh"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pg2sj"]
+shader = ExtResource("1_7lty8")
+shader_parameter/color_a = Color(0.6705918, 0.003527214, 0.96643335, 0)
+shader_parameter/color_b = Color(0.8117647, 0.14509805, 0, 0.67058825)
+
 [node name="Note" type="ColorRect"]
+material = SubResource("ShaderMaterial_pg2sj")
 offset_right = 42.0
 offset_bottom = 330.0
-color = Color(0.9137255, 0.8666667, 0.84705883, 1)
+color = Color(1, 1, 1, 0)
 script = ExtResource("1_m01oh")

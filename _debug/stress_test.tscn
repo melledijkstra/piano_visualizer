@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://82r1wty4copp"]
 
-[ext_resource type="PackedScene" uid="uid://crd8cpxcepm48" path="res://_debug/sparkle_particles.tscn" id="1_2hlpb"]
+[ext_resource type="PackedScene" uid="uid://crd8cpxcepm48" path="res://components/note_hit_particles.tscn" id="1_2hlpb"]
 [ext_resource type="Script" uid="uid://d33xvqeiswho8" path="res://_debug/stress_test.gd" id="1_xqmnf"]
 [ext_resource type="Script" uid="uid://ckt5hqqmwg27a" path="res://components/MidiKeyboard.gd" id="3_xug5m"]
 [ext_resource type="PackedScene" uid="uid://cggqb75a8w8r" path="res://addons/debug_menu/debug_menu.tscn" id="4_xug5m"]
@@ -16,7 +16,7 @@ mouse_default_cursor_shape = 2
 color = Color(0, 0, 0, 1)
 
 [node name="SparkleParticles" parent="." instance=ExtResource("1_2hlpb")]
-position = Vector2(-190, 665)
+position = Vector2(148, 670)
 one_shot = false
 
 [node name="MidiKeyboard" type="Control" parent="."]

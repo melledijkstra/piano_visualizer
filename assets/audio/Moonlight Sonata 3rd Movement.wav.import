@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://mwr3b6ok0f7k"
+path="res://.godot/imported/Moonlight Sonata 3rd Movement.wav-ddf36da62436f7f80cbc4e160a48239b.sample"
+
+[deps]
+
+source_file="res://assets/audio/Moonlight Sonata 3rd Movement.wav"
+dest_files=["res://.godot/imported/Moonlight Sonata 3rd Movement.wav-ddf36da62436f7f80cbc4e160a48239b.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

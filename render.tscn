@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cnsjr0nnq4dun"]
+[gd_scene load_steps=20 format=3 uid="uid://cnsjr0nnq4dun"]
 
 [ext_resource type="Script" uid="uid://bli33xbldhf30" path="res://render.gd" id="1_sfvfi"]
 [ext_resource type="Script" uid="uid://cqkrdnm17l7a3" path="res://midi_sequencer.gd" id="2_sfvfi"]
@@ -8,6 +8,11 @@
 [ext_resource type="Texture2D" uid="uid://bf77k045g8jxk" path="res://assets/icons/play.svg" id="4_gl1o6"]
 [ext_resource type="Script" uid="uid://c8sadfd68uy2k" path="res://play_pause_btn.gd" id="5_phk72"]
 [ext_resource type="Script" uid="uid://1cgm5yyatfn3" path="res://hud.gd" id="6_rfujs"]
+[ext_resource type="Script" uid="uid://d3n167vpbf55d" path="res://particle_manager.gd" id="8_phk72"]
+[ext_resource type="Shader" uid="uid://1jfc6syl6wfs" path="res://mist.gdshader" id="10_ncutg"]
+[ext_resource type="PackedScene" uid="uid://by4d7g8tc2moi" path="res://components/fire_particles.tscn" id="11_wy15a"]
+[ext_resource type="Script" uid="uid://cd1ddbq42uvax" path="res://audio_player.gd" id="12_c34ba"]
+[ext_resource type="AudioStream" uid="uid://mwr3b6ok0f7k" path="res://assets/audio/Moonlight Sonata 3rd Movement.wav" id="12_ncutg"]
 
 [sub_resource type="Sky" id="Sky_sfvfi"]
 
@@ -15,9 +20,11 @@
 background_mode = 3
 sky = SubResource("Sky_sfvfi")
 sky_custom_fov = 25.5
-glow_normalized = true
-glow_bloom = 0.2
-glow_blend_mode = 1
+glow_levels/1 = 10.0
+glow_intensity = 2.0
+glow_bloom = 0.1
+adjustment_brightness = 1.3
+adjustment_contrast = 1.5
 
 [sub_resource type="Gradient" id="Gradient_1bvp3"]
 offsets = PackedFloat32Array(0, 0.868, 1)
@@ -40,8 +47,12 @@ color_ramp = SubResource("GradientTexture1D_1bvp3")
 hue_variation_min = -1.0
 hue_variation_max = -1.0
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c34ba"]
+shader = ExtResource("10_ncutg")
+
 [node name="Main" type="Node2D"]
 script = ExtResource("1_sfvfi")
+outro_time = 5.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_sfvfi")
@@ -52,14 +63,16 @@ offset_bottom = 1080.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color(0, 0, 0, 1)
+metadata/_edit_lock_ = true
 
 [node name="MIDISequencer" type="Node" parent="."]
 script = ExtResource("2_sfvfi")
-midi_file_path = "res://input/cider_house_rules.mid"
+midi_file_path = "res://input/Moonlight Sonata 3rd Movement.mid"
 
-[node name="DebugMenu" parent="." instance=ExtResource("2_yyo7u")]
+[node name="DebugMenu" parent="." groups=["hidden_from_movie"] instance=ExtResource("2_yyo7u")]
 
-[node name="HUD" type="CanvasLayer" parent="."]
+[node name="HUD" type="CanvasLayer" parent="." groups=["hidden_from_movie"]]
+layer = 127
 script = ExtResource("6_rfujs")
 
 [node name="SimulationControls" type="PanelContainer" parent="HUD"]
@@ -79,11 +92,11 @@ theme_override_constants/margin_bottom = 5
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="SpeedLabel" type="Label" parent="HUD/SimulationControls/MarginContainer/VBoxContainer" groups=["render_controls"]]
+[node name="SpeedLabel" type="Label" parent="HUD/SimulationControls/MarginContainer/VBoxContainer" groups=["hidden_from_movie"]]
 layout_mode = 2
 text = "Speed"
 
-[node name="SpeedSlider" type="HSlider" parent="HUD/SimulationControls/MarginContainer/VBoxContainer" groups=["render_controls"]]
+[node name="SpeedSlider" type="HSlider" parent="HUD/SimulationControls/MarginContainer/VBoxContainer" groups=["hidden_from_movie"]]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Speed of the simulation"
@@ -129,10 +142,11 @@ script = ExtResource("5_phk72")
 
 [node name="NoteField" type="Node2D" parent="."]
 script = ExtResource("3_yyo7u")
-debug = true
+fall_speed = 500.0
 
 [node name="SparkleParticles" type="GPUParticles2D" parent="."]
-position = Vector2(247, 821)
+visible = false
+position = Vector2(111, 928)
 amount = 100
 lifetime = 4.0
 fixed_fps = 60
@@ -143,7 +157,8 @@ trail_section_subdivisions = 10
 process_material = SubResource("ParticleProcessMaterial_lquwl")
 
 [node name="ConfettiParticles" type="GPUParticles2D" parent="."]
-position = Vector2(764, 751)
+visible = false
+position = Vector2(395, 928)
 amount = 100
 lifetime = 5.0
 explosiveness = 0.5
@@ -153,6 +168,18 @@ visibility_rect = Rect2(-200, -600, 400, 600)
 trail_enabled = true
 trail_section_subdivisions = 10
 process_material = SubResource("ParticleProcessMaterial_lquwl")
+
+[node name="ParticleManager" type="Node" parent="."]
+script = ExtResource("8_phk72")
+particle_scene = ExtResource("11_wy15a")
+
+[node name="Mist" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_c34ba")
+offset_top = 822.0
+offset_right = 1919.0
+offset_bottom = 927.0
+color = Color(1, 1, 1, 0.99215686)
 
 [node name="VisualKeyboard" type="Control" parent="."]
 unique_name_in_owner = true
@@ -166,14 +193,28 @@ offset_top = -152.0
 offset_right = 1920.0
 grow_vertical = 0
 script = ExtResource("3_rfujs")
-show_labels = false
+white_key_color = Color(0.5409904, 0.54099053, 0.5409902, 1)
+metadata/_edit_lock_ = true
+
+[node name="TestFireParticles" parent="." instance=ExtResource("11_wy15a")]
+visible = false
+position = Vector2(247, 856)
+emitting = true
+one_shot = false
+
+[node name="AudioPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("12_ncutg")
+script = ExtResource("12_c34ba")
 
 [connection signal="song_loaded" from="MIDISequencer" to="HUD" method="_on_song_loaded"]
 [connection signal="song_loaded" from="MIDISequencer" to="NoteField" method="_on_song_loaded"]
 [connection signal="time_updated" from="MIDISequencer" to="HUD" method="_on_time_updated"]
 [connection signal="time_updated" from="MIDISequencer" to="NoteField" method="_on_time_updated"]
+[connection signal="time_updated" from="MIDISequencer" to="AudioPlayer" method="_on_midi_sequencer_time_updated"]
 [connection signal="value_changed" from="HUD/SimulationControls/MarginContainer/VBoxContainer/SpeedSlider" to="NoteField" method="_on_speed_slider_value_changed"]
 [connection signal="value_changed" from="HUD/SimulationControls/MarginContainer/VBoxContainer/TimelineSlider" to="MIDISequencer" method="_on_timeline_slider_value_changed"]
 [connection signal="toggled" from="HUD/SimulationControls/MarginContainer/VBoxContainer/PlayPauseBtn" to="MIDISequencer" method="_on_play_pause_btn_toggled"]
 [connection signal="toggled" from="HUD/SimulationControls/MarginContainer/VBoxContainer/PlayPauseBtn" to="HUD/SimulationControls/MarginContainer/VBoxContainer/PlayPauseBtn" method="_on_toggled"]
+[connection signal="toggled" from="HUD/SimulationControls/MarginContainer/VBoxContainer/PlayPauseBtn" to="AudioPlayer" method="_on_play_pause_btn_toggled"]
 [connection signal="finished" from="NoteField" to="." method="_on_finish"]
+[connection signal="note_hit_target" from="NoteField" to="ParticleManager" method="_on_note_hit_target"]

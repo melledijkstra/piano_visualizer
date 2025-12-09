@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://b8dlo7ivkln4n"]
+
+[ext_resource type="Shader" uid="uid://bla6jsn25lcj3" path="res://shaders/saber.gdshader" id="1_u0ex2"]
+[ext_resource type="Script" uid="uid://dn2j8rkj0qprd" path="res://components/saber.gd" id="2_mfo0y"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mfo0y"]
+shader = ExtResource("1_u0ex2")
+shader_parameter/base_color = Color(1, 0.98669523, 0.6342527, 1)
+shader_parameter/intensity = 1.0
+shader_parameter/falloff_exp = 2.5
+
+[node name="Saber" type="ColorRect"]
+material = SubResource("ShaderMaterial_mfo0y")
+offset_right = 1000.0
+offset_bottom = 39.0
+script = ExtResource("2_mfo0y")

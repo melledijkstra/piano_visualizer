@@ -7,7 +7,7 @@ bg_color = Color(0, 0, 0, 1)
 
 [node name="SongLayout" type="Node2D" node_paths=PackedStringArray("timeline")]
 script = ExtResource("1_4o18i")
-midi_file_path = "res://input/cider_house_rules.mid"
+midi_file_path = "res://input/Moonlight Sonata 3rd Movement.midi (piano only).mid"
 timeline = NodePath("HScrollBar/Timeline")
 
 [node name="HScrollBar" type="ScrollContainer" parent="."]

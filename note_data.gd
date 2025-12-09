@@ -12,6 +12,14 @@ var duration: float
 ## The velocity of this note | 0-1 range
 var velocity: float
 
+func setup(p_pitch: int, p_start_time: float, p_end_time: float, p_velocity: float) -> NoteData:
+	self.pitch = p_pitch
+	self.start_time = p_start_time
+	self.end_time = p_end_time
+	self.duration = p_end_time - p_start_time
+	self.velocity = p_velocity
+	return self
+
 func key_name() -> String:
 	var octave: int = self.get_octave()
 	var key_index = self.pitch % Globals.NOTES_IN_OCTAVE
