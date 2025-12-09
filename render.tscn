@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://cnsjr0nnq4dun"]
+[gd_scene load_steps=19 format=3 uid="uid://cnsjr0nnq4dun"]
 
 [ext_resource type="Script" uid="uid://bli33xbldhf30" path="res://render.gd" id="1_sfvfi"]
 [ext_resource type="Script" uid="uid://cqkrdnm17l7a3" path="res://midi_sequencer.gd" id="2_sfvfi"]
@@ -12,7 +12,6 @@
 [ext_resource type="Shader" uid="uid://1jfc6syl6wfs" path="res://mist.gdshader" id="10_ncutg"]
 [ext_resource type="PackedScene" uid="uid://by4d7g8tc2moi" path="res://components/fire_particles.tscn" id="11_wy15a"]
 [ext_resource type="Script" uid="uid://cd1ddbq42uvax" path="res://audio_player.gd" id="12_c34ba"]
-[ext_resource type="AudioStream" uid="uid://mwr3b6ok0f7k" path="res://assets/audio/Moonlight Sonata 3rd Movement.wav" id="12_ncutg"]
 
 [sub_resource type="Sky" id="Sky_sfvfi"]
 
@@ -57,9 +56,15 @@ outro_time = 5.0
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_sfvfi")
 
-[node name="Background" type="ColorRect" parent="."]
-offset_right = 1920.0
-offset_bottom = 1080.0
+[node name="BackgroundLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Background" type="ColorRect" parent="BackgroundLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color(0, 0, 0, 1)
@@ -83,10 +88,10 @@ offset_bottom = 291.0
 
 [node name="MarginContainer" type="MarginContainer" parent="HUD/SimulationControls"]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HUD/SimulationControls/MarginContainer"]
 layout_mode = 2
@@ -118,12 +123,12 @@ step = 5.0
 unique_name_in_owner = true
 layout_mode = 2
 text = "Speed: -
-Time: -:--"
+Time: -:--:--"
 
 [node name="SongInfo" type="Label" parent="HUD/SimulationControls/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Notes: ---
+text = "Notes: --/----
 Song Duration: -:--s"
 
 [node name="HSeparator" type="HSeparator" parent="HUD/SimulationControls/MarginContainer/VBoxContainer"]
@@ -203,7 +208,6 @@ emitting = true
 one_shot = false
 
 [node name="AudioPlayer" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("12_ncutg")
 script = ExtResource("12_c34ba")
 
 [connection signal="song_loaded" from="MIDISequencer" to="HUD" method="_on_song_loaded"]
@@ -217,4 +221,5 @@ script = ExtResource("12_c34ba")
 [connection signal="toggled" from="HUD/SimulationControls/MarginContainer/VBoxContainer/PlayPauseBtn" to="HUD/SimulationControls/MarginContainer/VBoxContainer/PlayPauseBtn" method="_on_toggled"]
 [connection signal="toggled" from="HUD/SimulationControls/MarginContainer/VBoxContainer/PlayPauseBtn" to="AudioPlayer" method="_on_play_pause_btn_toggled"]
 [connection signal="finished" from="NoteField" to="." method="_on_finish"]
+[connection signal="note_hit_target" from="NoteField" to="HUD" method="_on_note_hit_target"]
 [connection signal="note_hit_target" from="NoteField" to="ParticleManager" method="_on_note_hit_target"]
