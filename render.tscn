@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cnsjr0nnq4dun"]
+[gd_scene load_steps=21 format=3 uid="uid://cnsjr0nnq4dun"]
 
 [ext_resource type="Script" uid="uid://bli33xbldhf30" path="res://render.gd" id="1_sfvfi"]
 [ext_resource type="Script" uid="uid://cqkrdnm17l7a3" path="res://midi_sequencer.gd" id="2_sfvfi"]
@@ -9,9 +9,11 @@
 [ext_resource type="Script" uid="uid://c8sadfd68uy2k" path="res://play_pause_btn.gd" id="5_phk72"]
 [ext_resource type="Script" uid="uid://1cgm5yyatfn3" path="res://hud.gd" id="6_rfujs"]
 [ext_resource type="Script" uid="uid://d3n167vpbf55d" path="res://particle_manager.gd" id="8_phk72"]
-[ext_resource type="Shader" uid="uid://1jfc6syl6wfs" path="res://mist.gdshader" id="10_ncutg"]
+[ext_resource type="Shader" uid="uid://f2hq4j7gyvst" path="res://shaders/mist2.gdshader" id="10_ncutg"]
+[ext_resource type="Texture2D" uid="uid://c2bp4e4kniu7c" path="res://assets/fog_noise_Gemini_Generated_Image_xr3y1wxr3y1wxr3y.png" id="11_wr07y"]
 [ext_resource type="PackedScene" uid="uid://by4d7g8tc2moi" path="res://components/fire_particles.tscn" id="11_wy15a"]
 [ext_resource type="Script" uid="uid://cd1ddbq42uvax" path="res://audio_player.gd" id="12_c34ba"]
+[ext_resource type="AudioStream" uid="uid://mwr3b6ok0f7k" path="res://assets/audio/Moonlight Sonata 3rd Movement.wav" id="12_ncutg"]
 
 [sub_resource type="Sky" id="Sky_sfvfi"]
 
@@ -48,6 +50,10 @@ hue_variation_max = -1.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_c34ba"]
 shader = ExtResource("10_ncutg")
+shader_parameter/noise_texture = ExtResource("11_wr07y")
+shader_parameter/fog_color = Color(0.7, 0.7, 0.8, 0.5)
+shader_parameter/speed_factor = 0.05
+shader_parameter/density = 0.80000001425
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_sfvfi")
@@ -181,10 +187,9 @@ particle_scene = ExtResource("11_wy15a")
 [node name="Mist" type="ColorRect" parent="."]
 visible = false
 material = SubResource("ShaderMaterial_c34ba")
-offset_top = 822.0
+offset_top = 719.0
 offset_right = 1919.0
 offset_bottom = 927.0
-color = Color(1, 1, 1, 0.99215686)
 
 [node name="VisualKeyboard" type="Control" parent="."]
 unique_name_in_owner = true
@@ -208,6 +213,7 @@ emitting = true
 one_shot = false
 
 [node name="AudioPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("12_ncutg")
 script = ExtResource("12_c34ba")
 
 [connection signal="song_loaded" from="MIDISequencer" to="HUD" method="_on_song_loaded"]
